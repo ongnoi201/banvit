@@ -1,0 +1,304 @@
+:root {
+    --bg: #0ea5a4;
+    --ui-bg: rgba(255, 255, 255, 0.06);
+    --btn-bg: rgba(255, 255, 255, 0.12);
+    --btn-active: rgba(255, 255, 255, 0.22);
+    --text: #fff;
+    --accent-color: #ffb86b;
+    --modal-bg: rgba(10, 20, 30, 0.9);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --hp-bot-fill: #ef4444;
+    /* Màu thanh máu Bot */
+    --hp-player-fill: #4ade80;
+    /* Màu thanh máu Player */
+    --hp-bg: rgba(0, 0, 0, 0.4);
+    --danger-color: #dc2626; /* THÊM MỚI */
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #08121a;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    color: var(--text);
+    overflow: hidden;
+}
+
+.wrap {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background: linear-gradient(180deg, #7dd3fc 0%, #bae6fd 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    z-index: 1;
+}
+
+#ui {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    z-index: 99999;
+}
+
+#ui .stat {
+    background: var(--ui-bg);
+    padding: 8px 12px;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.controls {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.left-right {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.big-btn {
+    flex: 1;
+    min-height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background: var(--btn-bg);
+    font-size: 18px;
+    font-weight: 700;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.hp-bar-container {
+    flex-grow: 1;
+    height: 22px;
+    background-color: var(--hp-bg);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    margin: 0 10px;
+    overflow: hidden;
+}
+
+.hp-bar-fill {
+    height: 100%;
+    width: 100%;
+    background-color: var(--hp-bot-fill);
+    border-radius: 5px;
+    transition: width 0.3s ease-out;
+}
+
+.hp-bar-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    white-space: nowrap;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 20;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--modal-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    width: 80%;
+    max-width: 400px;
+    position: relative;
+}
+
+.modal-title {
+    margin: 20px 0;
+    font-size: 28px;
+    color: var(--accent-color);
+}
+
+#overlayActions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #334155;
+    color: var(--text);
+    transition: background-color 0.2s;
+}
+
+.action-button.primary {
+    background: var(--accent-color);
+    color: #08121a;
+}
+
+/* THÊM MỚI: Style cho nút nguy hiểm */
+.action-button.danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.action-button:disabled {
+    background: #475569;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* THÊM MỚI: Style cho khu vực nút trong modal xác nhận */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.upgrade-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.upgrade-info .stat-name {
+    font-weight: bold;
+}
+
+.upgrade-info .stat-value {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.upgrade-buy-btn {
+    background: var(--accent-color);
+    color: #08121a;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.upgrade-buy-btn:disabled {
+    background: #475569;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+#levelGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 10px;
+    max-height: 40vh;
+    overflow-y: auto;
+    padding: 10px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.level-button {
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: #334155;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.level-button.unlocked {
+    background: #4d7c0f;
+}
+
+.level-button:disabled {
+    background: #475569;
+    opacity: 0.5;
+    cursor: not-allowed;
+}

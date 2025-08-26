@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Bắn vịt</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="shortcut icon" href="rubber-duck.png" type="image/png">
+</head>
+
+<body>
+    <div class="wrap">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="ui">
+            <div class="stat">Cấp: <span id="currentLevelDisplay">1</span></div>
+            <div class="hp-bar-container bot-hp">
+                <div id="botHPFill" class="hp-bar-fill"></div>
+                <span id="botHPText" class="hp-bar-text">100/100</span>
+            </div>
+            <div class="stat"><span id="playerGold">0 </span> 🟡</div>
+        </div>
+
+        <div class="controls" aria-hidden="false">
+            <div class="left-right">
+                <div id="btnLeft" class="big-btn">◀</div>
+                <div id="btnRight" class="big-btn">▶</div>
+            </div>
+        </div>
+
+        <div id="gameOverlay" class="modal-overlay">
+            <div class="modal-content">
+                <h2 id="overlayTitle" class="modal-title"></h2>
+                <p id="overlayText"></p>
+                <div id="overlayActions">
+                    <button id="btnMainAction" class="action-button primary"></button>
+                    <button id="btnUpgrades" class="action-button">Nâng Cấp</button>
+                    <button id="btnLevelSelect" class="action-button">Chọn Màn</button>
+                    <button id="btnBotInfo" class="action-button">Thông tin Bot</button>
+                    <button id="btnReset" class="action-button danger">Chơi Lại Từ Đầu</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="upgradeModal" class="modal-overlay">
+            <div class="modal-content">
+                <button id="closeUpgradeModal" class="close-modal-btn">&times;</button>
+                <h3 class="modal-title">Nâng Cấp Sức Mạnh</h3>
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="stat-name">Máu Tối Đa</div>
+                        <div class="stat-value">Hiện tại: <span id="currentHP">100</span></div>
+                    </div>
+                    <button class="upgrade-buy-btn" id="upgradeHP">Nâng Cấp <span class="cost">(100 Vàng)</span></button>
+                </div>
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="stat-name">Sát Thương</div>
+                        <div class="stat-value">Hiện tại: <span id="currentDamage">1</span></div>
+                    </div>
+                    <button class="upgrade-buy-btn" id="upgradeDamage">Nâng Cấp <span class="cost">(100 Vàng)</span></button>
+                </div>
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="stat-name">Tốc Độ Di Chuyển</div>
+                        <div class="stat-value">Hiện tại: <span id="currentSpeed">2.0</span></div>
+                    </div>
+                    <button class="upgrade-buy-btn" id="upgradeSpeed">Nâng Cấp <span class="cost">(100 Vàng)</span></button>
+                </div>
+                <div class="upgrade-item">
+                     <div class="upgrade-info">
+                        <div class="stat-name">Tốc Độ Bắn</div>
+                        <div class="stat-value">Hiện tại: <span id="currentFireRate">0.7/s (1 tia)</span></div>
+                    </div>
+                    <button class="upgrade-buy-btn" id="upgradeFireRate">Nâng Cấp <span class="cost">(100 Vàng)</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="levelSelectModal" class="modal-overlay">
+            <div class="modal-content">
+                 <button id="closeLevelSelectModal" class="close-modal-btn">&times;</button>
+                 <h3 class="modal-title">Chọn Màn Chơi</h3>
+                 <div id="levelGrid"></div>
+            </div>
+        </div>
+
+        <div id="botInfoModal" class="modal-overlay">
+            <div class="modal-content">
+                <button id="closeBotInfoModal" class="close-modal-btn">&times;</button>
+                <h3 id="botInfoTitle" class="modal-title">Thông tin Bot</h3>
+                <div class="info-list">
+                    <div class="upgrade-item">
+                        <div class="stat-name">Máu</div>
+                        <div class="stat-value"><span id="botInfoHP">100</span></div>
+                    </div>
+                    <div class="upgrade-item">
+                        <div class="stat-name">Sát Thương</div>
+                        <div class="stat-value"><span id="botInfoDamage">1</span></div>
+                    </div>
+                    <div class="upgrade-item">
+                        <div class="stat-name">Tốc Độ Di Chuyển</div>
+                        <div class="stat-value"><span id="botInfoSpeed">2.0</span></div>
+                    </div>
+                    <div class="upgrade-item">
+                        <div class="stat-name">Tốc Độ Bắn</div>
+                        <div class="stat-value"><span id="botInfoFireRate">0.7/s</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="resetConfirmModal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="modal-title">Xác Nhận Xóa Dữ Liệu</h3>
+                <p>Bạn có chắc chắn muốn xóa toàn bộ tiến trình và chơi lại từ đầu không? Hành động này không thể hoàn tác.</p>
+                <div class="modal-actions">
+                    <button id="btnCancelReset" class="action-button">Hủy</button>
+                    <button id="btnConfirmReset" class="action-button danger">Xóa và Chơi Lại</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <audio id="playerShootSound" src="playerGun.mp3" preload="auto"></audio>
+    <audio id="botShootSound" src="botGun.mp3" preload="auto"></audio>
+    <audio id="playerHitSound" src="playerHit.mp3" preload="auto"></audio>
+    <audio id="botHitSound" src="vitkeu.mp3" preload="auto"></audio>
+    <audio id="winSound" src="winGame.wav" preload="auto"></audio>
+    <audio id="loseSound" src="endGame.wav" preload="auto"></audio>
+    <audio id="upgradeSound" src="upgrade.wav" preload="auto"></audio>
+    <audio id="buttonClickSound" src="click.mp3" preload="auto"></audio>
+    <audio id="noGoldSound" src="upgrade.wav" preload="auto"></audio>
+    <script src="index.js"></script>
+</body>
+</html>
